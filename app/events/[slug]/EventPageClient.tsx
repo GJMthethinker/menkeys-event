@@ -190,7 +190,7 @@ export default function EventPageClient({
                                                                                    )
                                                                      ),
 
-step === step === 3 && issuedTickets.length > 0 && h("div", {},
+step === 3 && issuedTickets.length > 0 && h("div", {},
                                                      h("div", { className: "flex items-center gap-2 mb-6 text-xs text-gold" }, h(Check, { size: 14 }), " Paiement confirme"),
                                                      h("div", { className: "bg-surface-2 border border-line p-5" },
                                                                   h("p", { className: "font-sans text-[11px] text-crimson" }, "Menkeys Event"),
