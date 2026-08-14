@@ -200,14 +200,12 @@ step === 3 && issuedTickets.length > 0 && h("div", {},
                                                                   h("div", { className: "mt-4 space-y-2" },
                                                                                  issuedTickets.map((tk) => h("div", { key: tk.id, className: "flex items-center justify-between border-t border-line pt-2" },
                                                                                                                   h("span", { className: "font-display text-sm" }, tk.code),
-                                                                                                                             h("span", { className: "flex items-center gap-1 text-[11px] text-gold" }, h(QrCode, { size: 12 }), " Valide")
+                h("span", { className: "flex items-center gap-1 text-[11px] text-gold" }, h(QrCode, { size: 12 }), " Valide")
                                                                                                                            ))
-                                                                              
-                                                      ))
-                                                                                                                               )
-                                                                                                               ),
-                                                                                                   h("button", { onClick: closeCheckout, className: "font-sans w-full py-3 rounded-md mt-6 border border-ivory" }, "FERMER")
-                                                                                                 )
+                                                                                )
+                                                                 ),
+h("button", { onClick: closeCheckout, className: "font-sans w-full py-3 rounded-md mt-6 border border-ivory" }, "FERMER")
+                                                    )
                                            )
                                  )
              );
