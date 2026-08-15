@@ -1,63 +1,68 @@
+import Link from "next/link";
+import { createElement as h } from "react";
+import { Crown, Compass, ArrowRight } from "lucide-react";
 import { listPublishedEvents } from "@/lib/data/events";
 import { listTicketTypesByEvent } from "@/lib/data/tickets";
 
+const MOIS = ["janvier","fevrier","mars","avril","mai","juin","juillet","aout","septembre","octobre","novembre","decembre"];
+
+function formatDate(iso: string) {
+    const parts = iso.split("-").map(Number);
+    return parts[2] + " " + MOIS[parts[1] - 1] + " " + parts[0];
+}
+
+function formatHTG(n: number) {
+    return n.toLocaleString("fr-FR") + " HTG";
+}
+
 export default async function Home() {
-  const publishedEvents = await listPublishedEvents();
+    const events = await listPublishedEvents();
+    const featured = events.slice(0, 3);
 
-  return (
-    <main className="min-h-screen px-6 py-16 sm:px-10">
-      <p className="font-sans text-[11px] font-bold uppercase tracking-[0.28em] text-crimson">
-        Fondations — Étape 1
-      </p>
-      <h1 className="mt-3 font-display text-4xl uppercase sm:text-6xl">
-        Menkeys Event
-      </h1>
-      <p className="mt-4 max-w-lg text-sm text-muted">
-        Le projet est câblé de bout en bout : modèle de données, couche de
-        données simulée et design system. Les événements ci-dessous viennent
-        réellement de <code className="text-ivory">lib/data/events.ts</code>.
-      </p>
+  const withPrices = await Promise.all(
+        featured.map(async (event) => {
+                const ticketTypes = await listTicketTypesByEvent(event.id);
+                const prices = ticketTypes.map((t) => t.price);
+                const minPrice = prices.length > 0 ? Math.min(...prices) : 0;
+                return { event, minPrice };
+        })
+      );
 
-      <div className="mt-10 space-y-4">
-        {publishedEvents.map(async (event) => {
-          const ticketTypes = await listTicketTypesByEvent(event.id);
-          return (
-            <div
-              key={event.id}
-              className="clip-corner-tr border border-line bg-surface p-5"
-            >
-              <p className="font-sans text-[11px] uppercase tracking-[0.2em] text-muted">
-                {event.date} · {event.venue}, {event.city}
-              </p>
-              <h2 className="mt-1 font-display text-2xl">{event.name}</h2>
-              <div className="mt-3 flex gap-4 text-xs text-muted">
-                {ticketTypes.map((t) => (
-                  <span key={t.id}>
-                    {t.name} —{" "}
-                    <span className="text-ivory">
-                      {t.price} {t.currency}
-                    </span>
-                  </span>
-                ))}
-              </div>
-            </div>
-          );
-        })}
-      </div>
+  return h("main", { className: "min-h-screen" },
+               h("section", { className: "px-5 sm:px-10 pt-24 pb-16 text-center" },
+                       h("p", { className: "font-sans text-[11px] font-bold uppercase tracking-[0.28em] text-crimson" }, "The Menkeys Production presente"),
+                       h("h1", { className: "mt-3 font-display text-6xl uppercase sm:text-8xl" }, "Menkeys Event"),
+                       h("p", { className: "mt-5 max-w-xl mx-auto text-sm text-muted leading-relaxed" },
+                                 "La billetterie qui donne vie aux evenements haitiens. Trouve ton prochain sortie, ou lance la billetterie du tien."
+                               ),
+                       h("div", { className: "mt-8 flex flex-wrap justify-center gap-4" },
+                                 h(Link, {
+                                             href: "/discover",
+                                             className: "font-sans flex items-center gap-2 px-6 py-3 rounded-md bg-crimson text-ivory",
+                                 }, h(Compass, { size: 15 }), " DECOUVRIR LES EVENEMENTS"),
+                                 h(Link, {
+                                             href: "/organizer",
+                                             className: "font-sans flex items-center gap-2 px-6 py-3 rounded-md border border-line hover:border-crimson",
+                                 }, h(Crown, { size: 15 }), " ESPACE ORGANISATEUR")
+                               )
+                     ),
 
-      <div className="mt-16 border-t border-line pt-6">
-        <p className="font-sans text-[11px] font-bold uppercase tracking-[0.28em] text-muted">
-          Prochaines étapes
-        </p>
-        <ul className="mt-3 space-y-1 text-sm text-muted">
-          <li>2 — Espace Organisateur (création de compte, création d'événement)</li>
-          <li>3 — Page publique + Billetterie (intégration du prototype)</li>
-          <li>4 — Achat &amp; billet numérique (QR Code)</li>
-          <li>5 — Menkeys Scan (contrôle d'accès)</li>
-          <li>6 — Dashboard Organisateur (ventes, statistiques)</li>
-          <li>7 — Discover (recherche d'événements)</li>
-        </ul>
-      </div>
-    </main>
-  );
+               withPrices.length > 0 && h("section", { className: "px-5 sm:px-10 pb-20" },
+                                                h("div", { className: "flex items-center justify-between mb-6" },
+                                                          h("p", { className: "font-sans text-[11px] font-bold uppercase tracking-[0.2em] text-muted" }, "A la une"),
+                                                          h(Link, { href: "/discover", className: "font-sans flex items-center gap-1 text-[11px] uppercase text-crimson" }, "Voir tout ", h(ArrowRight, { size: 12 }))
+                                                        ),
+                                                h("div", { className: "grid gap-5 sm:grid-cols-2 lg:grid-cols-3" },
+                                                          withPrices.map(({ event, minPrice }) => h(Link, {
+                                                                      key: event.id,
+                                                                      href: "/events/" + event.slug,
+                                                                      className: "clip-corner-tr block border border-line bg-surface p-5 hover:border-crimson",
+                                                          },
+                                                                                                              h("h2", { className: "font-display text-2xl" }, event.name),
+                                                                                                              h("p", { className: "mt-2 text-xs text-muted" }, formatDate(event.date) + " - " + event.venue + ", " + event.city),
+                                                                                                              h("p", { className: "mt-4 font-display text-lg" }, minPrice === 0 ? "Gratuit" : "A partir de " + formatHTG(minPrice))
+                                                                                                            ))
+                                                        )
+                                              )
+             );
 }
