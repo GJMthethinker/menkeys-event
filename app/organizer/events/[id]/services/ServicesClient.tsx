@@ -19,11 +19,20 @@ export default function ServicesClient({ event }: { event: EventRecord }) {
     const [contactName, setContactName] = useState("");
     const [contactPhone, setContactPhone] = useState("");
     const [notes, setNotes] = useState("");
+      const [error, setError] = useState<string | null>(null);
     const [submitting, setSubmitting] = useState(false);
     const [sentUrl, setSentUrl] = useState<string | null>(null);
 
   async function handleSubmit() {
-        if (!contactName || !contactPhone || quantity <= 0) return;
+                setError(null);
+            if (!contactName || !contactPhone) {
+                          setError("Merci de remplir ton nom et ton telephone.");
+                          return;
+            }
+            if (quantity <= 0) {
+                          setError("La quantite doit etre superieure a 0.");
+                          return;
+            }
         setSubmitting(true);
 
       await requestServiceAction({
@@ -99,6 +108,7 @@ export default function ServicesClient({ event }: { event: EventRecord }) {
                                                          h("label", { className: "text-[11px] uppercase text-muted" }, "Notes (optionnel)"),
                                                          h("textarea", { value: notes, onChange: (e: any) => setNotes(e.target.value), rows: 3, className: "w-full mt-1 px-3 py-2.5 rounded-md text-sm bg-surface border border-line text-ivory outline-none" })
                                                        ),
+                                         error && h("p", { className: "text-xs text-crimson" }, error),
                                          h("button", {
                                                          onClick: handleSubmit,
                                                          disabled: submitting,
