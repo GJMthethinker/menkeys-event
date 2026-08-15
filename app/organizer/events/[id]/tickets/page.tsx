@@ -24,6 +24,6 @@ export default async function ManageTicketsPage({ params }: { params: { id: stri
                        h(Link, { href: "/organizer/events/" + event.id + "/stats", className: "font-sans flex items-center gap-2 px-4 py-3 rounded-md border border-line hover:border-crimson" }, h(BarChart3, { size: 14 }), " STATISTIQUES")
                      ),
 
-               TicketsClient({ event, ticketTypes })
+                       h(TicketsClient, { event, ticketTypes })
              );
 }
