@@ -138,3 +138,21 @@ export interface ScanLog {
   agentId?: string;
   offline?: boolean; // mode hors connexion — section 15
 }
+
+
+  // ---------- SERVICES MENKEYS EVENT ----------
+
+export type ServiceType = "physical_tickets" | "scan_agents" | "security_agents";
+
+export interface ServiceRequest {
+    id: string;
+    eventId: string;
+    organizerId: string;
+    type: ServiceType;
+    quantity: number;
+    contactName: string;
+    contactPhone: string;
+    notes?: string;
+    status: "pending" | "contacted" | "fulfilled";
+    createdAt: string;
+}
