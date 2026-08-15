@@ -1,6 +1,8 @@
 "use server";
 
 import { createEvent, publishEvent } from "@/lib/data/events";
+import { createServiceRequest } from "@/lib/data/services";
+import type { ServiceType } from "@/lib/types";
 import { createTicketType } from "@/lib/data/tickets";
 import type { EventCategory } from "@/lib/types";
 
@@ -34,4 +36,17 @@ export async function createTicketTypeAction(input: {
 
 export async function publishEventAction(eventId: string) {
     return publishEvent(eventId);
+}
+
+
+export async function requestServiceAction(input: {
+        eventId: string;
+        organizerId: string;
+        type: ServiceType;
+        quantity: number;
+        contactName: string;
+        contactPhone: string;
+        notes?: string;
+}) {
+        return createServiceRequest(input);
 }
