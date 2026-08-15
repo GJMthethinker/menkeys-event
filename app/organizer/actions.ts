@@ -24,7 +24,7 @@ export async function createTicketTypeAction(input: {
     eventId: string;
     name: string;
     price: number;
-    currency: string;
+    currency:  "HTG" | "USD";
     quantityTotal: number;
     perks: string[];
     isFree: boolean;
