@@ -1,6 +1,6 @@
 import Link from "next/link";
 import { createElement as h } from "react";
-import { Plus, Crown } from "lucide-react";
+import { Plus, Crown, ScanLine } from "lucide-react";
 import { getOrganizerById } from "@/lib/data/organizers";
 import { listEventsByOrganizer } from "@/lib/data/events";
 
@@ -19,6 +19,7 @@ export default async function OrganizerPage() {
                                ),
                        h(Link, { href: "/organizer/events/new", className: "font-sans flex items-center gap-2 px-5 py-3 rounded-md bg-crimson text-ivory" }, h(Plus, { size: 14 }), " CREER UN EVENEMENT")
                      ),
+                   h(Link, { href: "/scan", className: "font-sans flex items-center gap-2 px-5 py-3 rounded-md border border-line hover:border-crimson" }, h(ScanLine, { size: 14 }), " CONTROLE D'ENTREE"),
 
                h("div", { className: "mt-10" },
                        h("p", { className: "font-sans text-[11px] font-bold uppercase tracking-[0.2em] text-muted mb-4" }, "Mes evenements (" + events.length + ")"),
