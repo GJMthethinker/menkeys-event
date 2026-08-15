@@ -21,9 +21,11 @@ export default async function ManageTicketsPage({ params }: { params: { id: stri
                                  h("h1", { className: "font-display text-3xl sm:text-4xl mt-1" }, event.name),
                                  h("p", { className: "text-sm text-muted mt-1" }, event.date + " - " + event.venue + ", " + event.city)
                                ),
-                       h(Link, { href: "/organizer/events/" + event.id + "/stats", className: "font-sans flex items-center gap-2 px-4 py-3 rounded-md border border-line hover:border-crimson" }, h(BarChart3, { size: 14 }), " STATISTIQUES")
+                       h(Link, { href: "/organizer/events/" + event.id + "/stats", className: "font-sans flex items-center gap-2 px-4 py-3 rounded-md border border-line hover:border-crimson" }, h(BarChart3, { size: 14 }), " STATISTIQUES"),
+                             ),
                      ),
 
+                       h(Link, { href: "/organizer/events/" + event.id + "/services", className: "font-sans flex items-center gap-2 px-4 py-3 rounded-md border border-line hover:border-crimson" }, "SERVICES MENKEYS"),
                        h(TicketsClient, { event, ticketTypes })
              );
 }
