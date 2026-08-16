@@ -5,6 +5,10 @@ import { createServiceRequest } from "@/lib/data/services";
 import type { ServiceType } from "@/lib/types";
 import { createTicketType } from "@/lib/data/tickets";
 import type { EventCategory } from "@/lib/types";
+import { signupOrganizer, verifyOrganizerLogin } from "@/lib/data/organizers";
+import { verifyAdminLogin } from "@/lib/data/admins";
+import { createSession, destroySession } from "@/lib/auth";
+import { redirect } from "next/navigation";
 
 export async function createEventAction(input: {
     organizerId: string;
@@ -49,4 +53,41 @@ export async function requestServiceAction(input: {
         notes?: string;
 }) {
         return createServiceRequest(input);
+}
+
+
+export async function signupOrganizerAction(input: {
+        name: string;
+        email: string;
+        password: string;
+        phone?: string;
+}) {
+        const result = await signupOrganizer(input);
+        if (!result.ok || !result.organizerId) return result;
+        await createSession("organizer", result.organizerId);
+        return result;
+}
+
+export async function loginOrganizerAction(email: string, password: string) {
+        const organizerId = await verifyOrganizerLogin(email, password);
+        if (!organizerId) return { ok: false };
+        await createSession("organizer", organizerId);
+        return { ok: true };
+}
+
+export async function logoutOrganizerAction() {
+        await destroySession();
+        redirect("/organizer/login");
+}
+
+export async function loginAdminAction(email: string, password: string) {
+        const adminId = await verifyAdminLogin(email, password);
+        if (!adminId) return { ok: false };
+        await createSession("admin", adminId);
+        return { ok: true };
+}
+
+export async function logoutAdminAction() {
+        await destroySession();
+        redirect("/admin/login");
 }
