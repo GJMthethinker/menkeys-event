@@ -90,3 +90,9 @@ export async function verifyOrganizerLogin(email: string, password: string): Pro
                                     `;
         return rows[0] ? rows[0].id : null;
 }
+
+
+export async function listAllOrganizers(): Promise<Organizer[]> {
+        const rows = await sql`select * from organizers order by created_at desc`;
+        return rows.map(mapOrganizer);
+}
