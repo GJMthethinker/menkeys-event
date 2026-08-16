@@ -62,3 +62,31 @@ export async function inviteTeamMember(
                   `;
     return mapTeamMember(rows[0]);
 }
+
+
+export async function signupOrganizer(input: {
+        name: string;
+        email: string;
+        password: string;
+        phone?: string;
+}): Promise<{ ok: boolean; reason?: string; organizerId?: string }> {
+        const existing = await sql`select id from organizers where email = ${input.email} limit 1`;
+        if (existing[0]) {
+                    return { ok: false, reason: "email_taken" };
+        }
+        const id = generateId("org");
+        await sql`
+                insert into organizers (id, name, email, phone, verified, plan, password_hash)
+                        values (${id}, ${input.name}, ${input.email}, ${input.phone ?? null}, false, 'free', crypt(${input.password}, gen_salt('bf')))
+                            `;
+        return { ok: true, organizerId: id };
+}
+
+export async function verifyOrganizerLogin(email: string, password: string): Promise<string | null> {
+        const rows = await sql`
+                select id from organizers
+                        where email = ${email} and password_hash is not null and password_hash = crypt(${password}, password_hash)
+                                limit 1
+                                    `;
+        return rows[0] ? rows[0].id : null;
+}
