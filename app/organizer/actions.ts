@@ -9,6 +9,7 @@ import { signupOrganizer, verifyOrganizerLogin } from "@/lib/data/organizers";
 import { verifyAdminLogin } from "@/lib/data/admins";
 import { createSession, destroySession } from "@/lib/auth";
 import { redirect } from "next/navigation";
+import { requireOrganizer } from "@/lib/auth";
 
 export async function createEventAction(input: {
     organizerId: string;
@@ -23,7 +24,8 @@ export async function createEventAction(input: {
     city: string;
     capacity: number;
 }) {
-    return createEvent(input);
+            const organizerId = await requireOrganizer();
+            return createEvent({ ...input, organizerId });
 }
 
 export async function createTicketTypeAction(input: {
