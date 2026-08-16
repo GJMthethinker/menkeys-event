@@ -64,3 +64,9 @@ export async function cancelEvent(id: string): Promise<EventRecord | undefined> 
     const rows = await sql`update events set status = 'cancelled' where id = ${id} returning *`;
     return rows[0] ? mapRow(rows[0]) : undefined;
 }
+
+
+export async function listAllEvents(): Promise<EventRecord[]> {
+      const rows = await sql`select * from events order by created_at desc`;
+      return rows.map(mapRow);
+}
