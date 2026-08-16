@@ -3,12 +3,13 @@ import { createElement as h } from "react";
 import { Plus, Crown, ScanLine } from "lucide-react";
 import { getOrganizerById } from "@/lib/data/organizers";
 import { listEventsByOrganizer } from "@/lib/data/events";
-
-const DEMO_ORGANIZER_ID = "org_1";
+import { requireOrganizer } from "@/lib/auth";
+import { logoutOrganizerAction } from "@/app/organizer/actions";
 
 export default async function OrganizerPage() {
-    const organizer = await getOrganizerById(DEMO_ORGANIZER_ID);
-    const events = await listEventsByOrganizer(DEMO_ORGANIZER_ID);
+        const organizerId = await requireOrganizer();
+        const organizer = await getOrganizerById(organizerId);
+        const events = await listEventsByOrganizer(organizerId);
 
   return h("main", { className: "min-h-screen px-5 sm:px-10 py-12" },
                h("div", { className: "flex items-center justify-between flex-wrap gap-4" },
@@ -20,6 +21,9 @@ export default async function OrganizerPage() {
                        h(Link, { href: "/organizer/events/new", className: "font-sans flex items-center gap-2 px-5 py-3 rounded-md bg-crimson text-ivory" }, h(Plus, { size: 14 }), " CREER UN EVENEMENT")
                      ),
                    h(Link, { href: "/scan", className: "font-sans flex items-center gap-2 px-5 py-3 rounded-md border border-line hover:border-crimson" }, h(ScanLine, { size: 14 }), " CONTROLE D'ENTREE"),
+                   h("form", { action: logoutOrganizerAction },
+                               h("button", { type: "submit", className: "font-sans px-5 py-3 rounded-md border border-line hover:border-crimson text-[11px] uppercase tracking-[0.15em]" }, "Deconnexion")
+                             ),
 
                h("div", { className: "mt-10" },
                        h("p", { className: "font-sans text-[11px] font-bold uppercase tracking-[0.2em] text-muted mb-4" }, "Mes evenements (" + events.length + ")"),
