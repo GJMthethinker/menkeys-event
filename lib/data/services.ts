@@ -39,3 +39,19 @@ export async function listServiceRequestsByEvent(eventId: string): Promise<Servi
     const rows = await sql`select * from service_requests where event_id = ${eventId} order by created_at desc`;
     return rows.map(mapRow);
 }
+
+
+export async function listAllServiceRequests(): Promise<(ServiceRequest & { eventName: string; organizerName: string })[]> {
+      const rows = await sql`
+          select sr.*, e.name as event_name, o.name as organizer_name
+              from service_requests sr
+                  join events e on e.id = sr.event_id
+                      join organizers o on o.id = sr.organizer_id
+                          order by sr.created_at desc
+                            `;
+      return rows.map((r: any) => ({
+              ...mapRow(r),
+              eventName: r.event_name,
+              organizerName: r.organizer_name,
+      }));
+}
