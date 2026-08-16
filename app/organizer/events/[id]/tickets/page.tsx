@@ -5,10 +5,13 @@ import { getEventById } from "@/lib/data/events";
 import { listTicketTypesByEvent } from "@/lib/data/tickets";
 import { notFound } from "next/navigation";
 import TicketsClient from "@/app/organizer/events/[id]/tickets/TicketsClient";
+import { requireOrganizer } from "@/lib/auth";
 
 export default async function ManageTicketsPage({ params }: { params: { id: string } }) {
     const event = await getEventById(params.id);
     if (!event) notFound();
+        const organizerId = await requireOrganizer();
+        if (event.organizerId !== organizerId) notFound();
 
   const ticketTypes = await listTicketTypesByEvent(event.id);
 
