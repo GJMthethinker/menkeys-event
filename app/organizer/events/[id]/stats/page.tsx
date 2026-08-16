@@ -5,6 +5,7 @@ import { getEventById } from "@/lib/data/events";
 import { listTicketTypesByEvent } from "@/lib/data/tickets";
 import { listTicketsByEvent } from "@/lib/data/orders";
 import { notFound } from "next/navigation";
+import { requireOrganizer } from "@/lib/auth";
 
 function formatHTG(n: number) {
     return n.toLocaleString("fr-FR") + " HTG";
@@ -24,6 +25,8 @@ function StatCard(props: { icon: any; label: string; value: string; sub?: string
 export default async function EventStatsPage({ params }: { params: { id: string } }) {
     const event = await getEventById(params.id);
     if (!event) notFound();
+        const organizerId = await requireOrganizer();
+        if (event.organizerId !== organizerId) notFound();
 
   const ticketTypes = await listTicketTypesByEvent(event.id);
     const tickets = await listTicketsByEvent(event.id);
