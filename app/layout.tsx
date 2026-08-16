@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import { Anton, Inter } from "next/font/google";
 import "./globals.css";
+import NavBar from "./NavBar";
 
 const anton = Anton({
   subsets: ["latin"],
@@ -28,7 +29,8 @@ export default function RootLayout({
   return (
     <html lang="fr">
       <body className={`${anton.variable} ${inter.variable} font-sans`}>
-        {children}
+        <NavBar />
+                  {children}
       </body>
     </html>
   );
