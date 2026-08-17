@@ -48,8 +48,8 @@ export async function createEvent(
     const id = generateId("evt");
     const status = input.status ?? "draft";
     const rows = await sql`
-        insert into events (id, organizer_id, slug, name, category, description, date, time, venue, address, city, capacity, status)
-            values (${id}, ${input.organizerId}, ${input.slug}, ${input.name}, ${input.category}, ${input.description}, ${input.date}, ${input.time}, ${input.venue}, ${input.address}, ${input.city}, ${input.capacity}, ${status})
+              insert into events (id, organizer_id, slug, name, category, description, date, time, venue, address, city, capacity, cover_image_url, status)
+                  values (${id}, ${input.organizerId}, ${input.slug}, ${input.name}, ${input.category}, ${input.description}, ${input.date}, ${input.time}, ${input.venue}, ${input.address}, ${input.city}, ${input.capacity}, ${input.coverImageUrl ?? null}, ${status})
                 returning *
                   `;
     return mapRow(rows[0]);
