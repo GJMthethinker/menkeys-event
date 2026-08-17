@@ -23,6 +23,7 @@ export async function createEventAction(input: {
     address: string;
     city: string;
     capacity: number;
+        coverImageUrl?: string;
 }) {
             const organizerId = await requireOrganizer();
             return createEvent({ ...input, organizerId });
