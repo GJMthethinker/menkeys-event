@@ -49,6 +49,7 @@ export default function TicketsClient({ event, ticketTypes }: { event: EventReco
                h("div", {},
                        h("div", { className: "flex items-center justify-between mb-4" },
                                  h("p", { className: "font-sans text-[11px] font-bold uppercase tracking-[0.2em] text-muted" }, "Categories existantes (" + ticketTypes.length + ")"),
+                                     ticketTypes.length === 0 && event.status !== "published" && h("p", { className: "text-xs text-muted mb-3" }, "Ajoute au moins une categorie de billet avant de publier."),
                                  event.status !== "published" && h("button", {
                                              onClick: handlePublish,
                                              disabled: publishing || ticketTypes.length === 0,
