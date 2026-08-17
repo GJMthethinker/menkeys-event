@@ -71,6 +71,7 @@ export default function EventPageClient({
   }
 
   const heroChildren = [
+            event.coverImageUrl && h("img", { key: "cover", src: event.coverImageUrl, className: "w-full max-h-96 object-cover rounded-md mb-6" }),
           h("p", { key: "eyebrow", className: "font-sans text-[11px] font-bold uppercase tracking-[0.28em] text-crimson" }, "The Menkeys Production presente"),
           h("h1", { key: "title", className: "font-display leading-[0.9] text-[15vw] sm:text-7xl mt-2" }, event.name),
           h("div", { key: "meta", className: "flex flex-wrap gap-x-8 gap-y-3 mt-8 text-sm" },
