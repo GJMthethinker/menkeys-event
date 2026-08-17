@@ -1,6 +1,6 @@
 "use server";
 
-import { createEvent, publishEvent } from "@/lib/data/events";
+import { createEvent, publishEvent, getEventById } from "@/lib/data/events";
 import { createServiceRequest } from "@/lib/data/services";
 import type { ServiceType } from "@/lib/types";
 import { createTicketType } from "@/lib/data/tickets";
@@ -38,11 +38,21 @@ export async function createTicketTypeAction(input: {
     perks: string[];
     isFree: boolean;
 }) {
-    return createTicketType(input);
+            const organizerId = await requireOrganizer();
+            const event = await getEventById(input.eventId);
+            if (!event || event.organizerId !== organizerId) {
+                            throw new Error("Non autorise");
+            }
+            return createTicketType(input);
 }
 
 export async function publishEventAction(eventId: string) {
-    return publishEvent(eventId);
+        const organizerId = await requireOrganizer();
+        const event = await getEventById(eventId);
+        if (!event || event.organizerId !== organizerId) {
+                    throw new Error("Non autorise");
+        }
+        return publishEvent(eventId);
 }
 
 
