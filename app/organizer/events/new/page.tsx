@@ -25,11 +25,21 @@ export default function NewEventPage() {
     const [city, setCity] = useState("");
     const [capacity, setCapacity] = useState(100);
     const [submitting, setSubmitting] = useState(false);
+        const [photoFile, setPhotoFile] = useState<File | null>(null);
+        const [photoPreview, setPhotoPreview] = useState<string | null>(null);
 
   async function handleSubmit() {
         if (!name || !date || !venue) return;
         setSubmitting(true);
-        const event = await createEventAction({
+        let coverImageUrl: string | undefined;
+              if (photoFile) {
+                              const formData = new FormData();
+                              formData.append("file", photoFile);
+                              const uploadRes = await fetch("/api/upload", { method: "POST", body: formData });
+                              const uploadData = await uploadRes.json();
+                              coverImageUrl = uploadData.url;
+              }
+      const event = await createEventAction({
                 organizerId: DEMO_ORGANIZER_ID,
                 slug: slugify(name),
                 name,
@@ -41,6 +51,7 @@ export default function NewEventPage() {
                 address: address || venue,
                 city,
                 capacity,
+                      coverImageUrl,
         });
         setSubmitting(false);
         router.push("/organizer/events/" + event.id + "/tickets");
@@ -79,6 +90,18 @@ export default function NewEventPage() {
                        field("Ville", h("input", { value: city, onChange: (e: any) => setCity(e.target.value), className: inputClass })),
                        field("Capacite", h("input", { type: "number", value: capacity, onChange: (e: any) => setCapacity(Number(e.target.value)), className: inputClass }))
                      ),
+
+                       field("Photo de couverture (optionnel)", h("input", {
+                                         type: "file",
+                                         accept: "image/*",
+                                         onChange: (e: any) => {
+                                                             const f = e.target.files?.[0] ?? null;
+                                                             setPhotoFile(f);
+                                                             setPhotoPreview(f ? URL.createObjectURL(f) : null);
+                                         },
+                                         className: "w-full mt-1 text-xs text-muted",
+                       })),
+                       photoPreview && h("img", { src: photoPreview, className: "mb-4 rounded-md max-h-40 object-cover" }),
 
                h("button", {
                        onClick: handleSubmit,
