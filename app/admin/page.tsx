@@ -1,4 +1,5 @@
 import { createElement as h } from "react";
+import Link from "next/link";
 import { requireAdmin } from "@/lib/auth";
 import { listAllOrganizers } from "@/lib/data/organizers";
 import { listAllEvents } from "@/lib/data/events";
@@ -29,7 +30,8 @@ export default async function AdminDashboardPage() {
                                  h("p", { className: "font-sans text-[11px] font-bold uppercase tracking-[0.28em] text-crimson" }, "Menkeys Event"),
                                  h("h1", { className: "mt-1 font-display text-3xl sm:text-4xl" }, "Super Admin")
                                ),
-                       h("form", { action: logoutAdminAction },
+h(Link, { href: "/admin/templates", className: "font-sans px-4 py-2.5 rounded-md border border-line hover:border-crimson text-[11px] uppercase tracking-[0.15em]" }, "Gabarits de billets"),
+                             h("form", { action: logoutAdminAction },
                                  h("button", { type: "submit", className: "font-sans px-4 py-2.5 rounded-md border border-line hover:border-crimson text-[11px] uppercase tracking-[0.15em]" }, "Deconnexion")
                                )
                      ),
