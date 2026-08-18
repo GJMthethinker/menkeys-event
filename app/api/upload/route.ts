@@ -1,10 +1,12 @@
 import { put } from "@vercel/blob";
 import { NextResponse } from "next/server";
-import { requireOrganizer } from "@/lib/auth";
+import { getSession } from "@/lib/auth";
 
-export async function POST(request: Request) {
-    await requireOrganizer();
-
+    const session = await getSession();
+    if (!session || (session.subjectType !== "organizer" && session.subjectType !== "admin")) {
+                return NextResponse.json({ error: "Non autorise" }, { status: 401 });
+    }
+    
   const form = await request.formData();
     const file = form.get("file") as File | null;
     if (!file) {
